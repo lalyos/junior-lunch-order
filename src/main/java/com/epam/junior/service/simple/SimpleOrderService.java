@@ -11,7 +11,7 @@ import com.epam.junior.domain.OrderNotFountException;
 import com.epam.junior.domain.OrderState;
 import com.epam.junior.service.OrderService;
 
-public class SimpleOrderService implements OrderService {
+public class SimpleOrderService implements OrderService, SimpleOrderServiceMBean {
 
     private static Integer orderId = 0;
     private Map<String, Order> orders = new HashMap<String, Order>();
@@ -43,5 +43,16 @@ public class SimpleOrderService implements OrderService {
             }
         }
         return history;
+    }
+
+    public String readOrderState(String orderId) {
+        return getState(orderId).name();
+    }
+
+    public void changeOrderState(String ordrId, String state) {
+        Order order = orders.get(orderId);
+        if (order != null) {
+            order.setState(OrderState.valueOf(state));
+        }
     }
 }
