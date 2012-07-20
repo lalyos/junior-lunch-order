@@ -19,6 +19,7 @@ public class SimpleOrderService implements OrderService {
     public String doOrder(Order order) {
         String newId =  "" + orderId++;
         order.setId(newId);
+        order.setState(OrderState.RECEIVED);
         orders.put(newId, order);
         return newId;
     }

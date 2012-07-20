@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,8 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class XmlBasedRestaurantRepository implements RestaurantRepository {
 
 	private List<Restaurant> restaurants;
+	private Map<String,Food> foodMap = new HashMap<String, Food>();
+	
 	static Logger logger = LoggerFactory.getLogger(XmlBasedRestaurantRepository.class);
 
 	public XmlBasedRestaurantRepository(List<Restaurant> restaurants) {
@@ -38,7 +42,9 @@ public class XmlBasedRestaurantRepository implements RestaurantRepository {
             String restaurantId = nextRestaurant.getId();
             Integer id = 0;
             for (Food nextFood : nextRestaurant.getMenu()) {
-                nextFood.setId(restaurantId + id++);
+                String foodId = restaurantId + id++;
+                nextFood.setId(foodId);
+                foodMap.put(foodId, nextFood);
             }
         }
         
@@ -141,5 +147,9 @@ public class XmlBasedRestaurantRepository implements RestaurantRepository {
 			res.printMenu(System.out);
 		}
 	}
+
+    public Food findFoodById(String id) {
+        return foodMap.get(id);
+    }
 
 }

@@ -1,10 +1,14 @@
 package com.epam.junior.domain;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Order {
     String id;
-    List<OrderItem> items;
+    Map<String, OrderItem> foodItemsMap = new HashMap<String, OrderItem>();
     String customer;
     Address deliveryAddress;
     OrderState state;
@@ -16,11 +20,19 @@ public class Order {
         this.id = id;
     }
     public List<OrderItem> getItems() {
-        return items;
+        return new ArrayList(foodItemsMap.values());
     }
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    
+    public void addItem(OrderItem item) {
+        String itemKey = item.getFood().getId();
+        OrderItem existingItem = foodItemsMap.get(itemKey);
+        if (existingItem == null) {
+            foodItemsMap.put(itemKey, item);
+        } else {
+            existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+        }
     }
+
     public String getCustomer() {
         return customer;
     }
@@ -40,4 +52,19 @@ public class Order {
         this.state = state;
     }
     
+    public Integer getTotal() {
+        Integer total = 0;
+        for (OrderItem item : foodItemsMap.values()) {
+            total += item.getTotal();
+        }
+        return total;
+    }
+    
+    public void print(PrintStream out) {
+        StringBuffer items = new StringBuffer();
+        for (OrderItem item : foodItemsMap.values()) {
+            items.append(String.format("%n\t%-5s : %-30s %-5d (%-5s) ", item.getQuantity(), item.getFood().getName(), item.getFood().getPrice(), item.getFood().getId()));
+        }
+        out.println(String.format("%n%s [state=%s]: %s%nTOTAL=%d ", customer, state, items, getTotal()));
+    }
 }
