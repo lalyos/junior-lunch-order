@@ -65,6 +65,6 @@ public class Order {
         for (OrderItem item : foodItemsMap.values()) {
             items.append(String.format("%n\t%-5s : %-30s %-5d (%-5s) ", item.getQuantity(), item.getFood().getName(), item.getFood().getPrice(), item.getFood().getId()));
         }
-        out.println(String.format("%n%s [state=%s]: %s%nTOTAL=%d ", customer, state, items, getTotal()));
+        out.println(String.format("%n[orderId:%s] %s [state=%s]: %s%nTOTAL=%d ", id, customer, state, items, getTotal()));
     }
 }
