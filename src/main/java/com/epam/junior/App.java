@@ -1,5 +1,13 @@
 package com.epam.junior;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +30,16 @@ public class App {
         restaurantRepo.listAllMenu();
         
         OrderService orderService = new SimpleOrderService();
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
+        try {
+            ObjectName name = new ObjectName("com.epam.junior.service.simple:type=SimpleOrderService"); 
+            mbs.registerMBean(orderService, name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+        
+
+        
         Address deliveryAddress = new Address();
         orderService.doOrder(
                 OrderBuilder.create(restaurantRepo)
@@ -41,6 +59,16 @@ public class App {
             order.print(System.out);
         }
         
-        logger.info("Main end....");
+        while(true) {
+            
+            logger.info("still running");
+            try {
+                Thread.currentThread().sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //logger.info("Main end....");
+
     }
 }
